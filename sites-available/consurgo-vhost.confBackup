@@ -1,0 +1,20 @@
+#consurgo.smeal.psu.edu virtual host
+server {
+        listen 80;
+        listen [::]:80;
+        server_name  consurgo.smeal.psu.edu;
+        root html;
+
+        access_log /var/log/nginx/consurgo.smeal.psu.edu.access.log main;
+        include /etc/nginx/includes/static-content.conf;
+
+        location / {
+                proxy_pass http://research/VirtualHostBase/http/consurgo.smeal.psu.edu:80/consurgo/VirtualHostRoot/;
+                proxy_set_header    Host            $host;
+                proxy_set_header    X-Real-IP       $remote_addr;
+                proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                rewrite ^/(.*)login_form https://secure.smeal.psu.edu/consurgo/$1 permanent;
+        }
+}
+
